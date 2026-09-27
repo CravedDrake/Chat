@@ -1,0 +1,53 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "roomCodes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || newData.val() == null)"
+      }
+    },
+
+    "rooms": {
+      "$roomId": {
+        ".read": "auth != null && data.child('members').hasChild(auth.uid) || (auth != null && !data.exists())",
+        ".write": "auth != null",
+
+        "code": { ".validate": "newData.isString() && newData.val().length <= 8" },
+        "hostId": { ".validate": "newData.isString()" },
+        "createdAt": { ".validate": "newData.val() == now || newData.isNumber()" },
+        "lastActivity": { ".validate": "newData.val() == now || newData.isNumber()" },
+        "status": { ".validate": "newData.isString()" },
+
+        "members": {
+          "$memberId": {
+            ".write": "auth != null && auth.uid == $memberId",
+            "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
+            "joinedAt": { ".validate": true },
+            "online": { ".validate": "newData.isBoolean()" }
+          }
+        },
+
+        "messages": {
+          ".read": "auth != null && root.child('rooms/' + $roomId + '/members').hasChild(auth.uid)",
+          "$messageId": {
+            ".write": "auth != null && root.child('rooms/' + $roomId + '/members').hasChild(auth.uid) && (!data.exists() || data.child('senderId').val() == auth.uid || !newData.exists())",
+            "senderId": { ".validate": "newData.val() == auth.uid" },
+            "senderName": { ".validate": "newData.isString() && newData.val().length <= 24" },
+            "type": { ".validate": "newData.val() == 'text' || newData.val() == 'image' || newData.val() == 'video' || newData.val() == 'gif'" },
+            "text": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 4000)" },
+            "timestamp": { ".validate": true },
+
+            "reactions": {
+              "$uid": {
+                ".write": "auth != null && auth.uid == $uid && root.child('rooms/' + $roomId + '/members').hasChild(auth.uid)"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

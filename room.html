@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Room · Nook</title>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/room.css" />
+</head>
+<body class="room-body">
+
+  <!-- ============================ LOADING ============================ -->
+  <div id="loadingScreen" class="state-screen">
+    <div class="spinner" aria-hidden="true"></div>
+    <p id="loadingLabel">Connecting…</p>
+  </div>
+
+  <!-- ============================ JOIN SCREEN ========================= -->
+  <div id="joinScreen" class="state-screen" hidden>
+    <span class="state-screen__icon">💬</span>
+    <h1 id="joinRoomHeading">Join room</h1>
+    <p id="joinRoomSub">Enter a display name to jump in.</p>
+    <form id="joinRoomForm" class="join-form" novalidate>
+      <label class="field">
+        <span class="field__label">Display name</span>
+        <input type="text" id="joinRoomNameInput" maxlength="24" autocomplete="off" placeholder="e.g. Alex" required />
+      </label>
+      <p class="field__error" id="joinRoomError" role="alert" hidden></p>
+      <button type="submit" class="btn btn--primary btn--block" id="joinRoomSubmit">Join Room</button>
+    </form>
+  </div>
+
+  <!-- ============================ ERROR SCREEN ======================== -->
+  <div id="errorScreen" class="state-screen" hidden>
+    <span class="state-screen__icon">⚠️</span>
+    <h1 id="errorTitle">Room not found</h1>
+    <p id="errorMessage">This room doesn't exist or the link is invalid.</p>
+    <a href="index.html" class="btn btn--primary">Back to homepage</a>
+  </div>
+
+  <!-- ============================ EXPIRED SCREEN ====================== -->
+  <div id="expiredScreen" class="state-screen" hidden>
+    <span class="state-screen__icon">⏳</span>
+    <h1>Room Expired</h1>
+    <p>This temporary chat room is no longer available.</p>
+    <a href="index.html" class="btn btn--primary">Create New Room</a>
+  </div>
+
+  <!-- ============================ CHAT UI ============================== -->
+  <div id="chatApp" class="chat-app" hidden>
+    <header class="chat-header">
+      <button id="roomCodeBtn" class="chat-header__code" title="Click to copy room code">
+        <span id="roomCodeText">------</span>
+        <span class="chat-header__copy-icon">⧉</span>
+      </button>
+      <div class="chat-header__members" id="memberCountWrap" title="Members in this room">
+        <span class="presence-dot"></span>
+        <span id="memberCount">0</span> members
+      </div>
+      <div class="chat-header__spacer"></div>
+      <button id="shareBtn" class="btn btn--icon btn--ghost" aria-label="Share invite link" title="Share invite">↗</button>
+      <button id="leaveBtn" class="btn btn--outline" aria-label="Leave room">Leave</button>
+    </header>
+
+    <main id="messagesArea" class="messages-area" aria-live="polite">
+      <div id="messagesList" class="messages-list"></div>
+      <div id="scrollAnchor"></div>
+    </main>
+
+
+    <div id="replyPreview" class="reply-preview" hidden>
+      <div class="reply-preview__body">
+        <span class="reply-preview__label">Replying to <strong id="replyPreviewName"></strong></span>
+        <span class="reply-preview__text" id="replyPreviewText"></span>
+      </div>
+      <button id="cancelReplyBtn" class="modal__close" aria-label="Cancel reply">✕</button>
+    </div>
+
+    <div id="mediaPreview" class="media-preview" hidden>
+      <div class="media-preview__thumb" id="mediaPreviewThumb"></div>
+      <div class="media-preview__info">
+        <span id="mediaPreviewName"></span>
+        <div class="media-preview__progress" id="mediaPreviewProgressWrap" hidden>
+          <div class="media-preview__progress-bar" id="mediaPreviewProgressBar"></div>
+        </div>
+      </div>
+      <button id="cancelMediaBtn" class="modal__close" aria-label="Cancel upload">✕</button>
+    </div>
+
+    <footer class="chat-input">
+      <div class="chat-input__row">
+        <div class="attach-wrap">
+          <button id="attachBtn" class="btn btn--icon input-icon-btn" aria-label="Attach media" aria-haspopup="true">+</button>
+          <div id="attachMenu" class="attach-menu" hidden>
+            <button data-attach="image">🖼️ Photo</button>
+            <button data-attach="video">🎬 Video</button>
+          </div>
+          <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+          <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" hidden />
+        </div>
+
+        <textarea id="messageInput" class="chat-input__textarea" rows="1" placeholder="Message…" aria-label="Message"></textarea>
+
+        <div class="emoji-wrap">
+          <button id="emojiBtn" class="btn btn--icon input-icon-btn" aria-label="Add emoji" aria-haspopup="true">🙂</button>
+          <div id="emojiPicker" class="emoji-picker" hidden>
+            <input type="text" id="emojiSearch" placeholder="Search emoji…" class="emoji-picker__search" />
+            <div id="emojiGrid" class="emoji-picker__grid"></div>
+          </div>
+        </div>
+
+        <button id="sendBtn" class="btn btn--primary input-send-btn" disabled aria-label="Send message">➤</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================ MESSAGE ACTION SHEET ================== -->
+  <div id="actionSheetOverlay" class="modal-overlay" hidden>
+    <div id="actionSheet" class="action-sheet" role="menu">
+      <button data-action="reply" role="menuitem">↩ Reply</button>
+      <button data-action="react" role="menuitem">😀 React</button>
+      <button data-action="copy" role="menuitem">⧉ Copy</button>
+      <button data-action="delete" role="menuitem" class="action-sheet__danger">🗑 Delete</button>
+    </div>
+  </div>
+
+  <!-- ============================ REACTION PICKER ======================== -->
+  <div id="reactionPickerOverlay" class="modal-overlay" hidden>
+    <div id="reactionPicker" class="reaction-picker" role="menu"></div>
+  </div>
+
+  <!-- ============================ LEAVE CONFIRM ========================== -->
+  <div id="leaveModalOverlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="leaveTitle">
+      <h2 id="leaveTitle">Leave this chat?</h2>
+      <p class="modal__subtitle">You will no longer be able to see the messages in this room.</p>
+      <div class="modal__actions">
+        <button id="leaveCancelBtn" class="btn btn--outline btn--block">Cancel</button>
+        <button id="leaveConfirmBtn" class="btn btn--danger btn--block">Leave</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ MEDIA LIGHTBOX ========================== -->
+  <div id="lightbox" class="lightbox" hidden>
+    <button id="lightboxClose" class="lightbox__close" aria-label="Close viewer">✕</button>
+    <a id="lightboxDownload" class="lightbox__download" download target="_blank" rel="noopener" aria-label="Open original">⬇</a>
+    <div id="lightboxContent" class="lightbox__content"></div>
+  </div>
+
+  <script type="module" src="js/room.js"></script>
+</body>
+</html>

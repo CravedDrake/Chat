@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nook — Private conversations. No clutter.</title>
+<meta name="description" content="Create a temporary private chat room and invite friends with a code or link." />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="bg-field" aria-hidden="true">
+    <span class="bg-orb bg-orb--green"></span>
+    <span class="bg-orb bg-orb--blue"></span>
+    <span class="bg-grid"></span>
+  </div>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">◆</span>
+        <span class="brand__name">Nook</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <button id="navJoinBtn" class="btn btn--ghost">Join Room</button>
+        <button id="navCreateBtn" class="btn btn--primary">Create Room</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__inner">
+        <p class="hero__eyebrow">No sign-up. No history. Just a room.</p>
+        <h1 class="hero__title">Private conversations.<br>No clutter.</h1>
+        <p class="hero__subtitle">
+          Spin up a temporary chat room in seconds, share a code or a link, and talk.
+          Rooms clean themselves up when everyone leaves — nothing lingers.
+        </p>
+        <div class="hero__actions">
+          <button id="heroCreateBtn" class="btn btn--primary btn--lg">Create a Room</button>
+          <button id="heroJoinBtn" class="btn btn--outline btn--lg">Join a Room</button>
+        </div>
+        <ul class="hero__facts">
+          <li><span class="dot dot--green"></span> Rooms self-destruct after 1 hour of silence</li>
+          <li><span class="dot dot--blue"></span> Anonymous by default — just pick a name</li>
+          <li><span class="dot dot--pink"></span> Images, video, GIFs, reactions & replies</li>
+        </ul>
+      </div>
+
+      <div class="hero__preview" aria-hidden="true">
+        <div class="preview-card">
+          <div class="preview-card__header">
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+            <span class="preview-card__title">room · X7K29P</span>
+          </div>
+          <div class="preview-card__body">
+            <div class="preview-msg preview-msg--left">
+              <div class="preview-bubble">Hey! Room's ready 👋</div>
+            </div>
+            <div class="preview-msg preview-msg--right">
+              <div class="preview-bubble preview-bubble--accent">Perfect, joining now</div>
+            </div>
+            <div class="preview-msg preview-msg--left">
+              <div class="preview-bubble">🔥 3 &nbsp; ❤️ 1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="how">
+      <div class="how__inner">
+        <article class="how-card">
+          <span class="how-card__index">Create</span>
+          <h3>Start a room</h3>
+          <p>Pick a display name and we generate a short room code and an invite link instantly.</p>
+        </article>
+        <article class="how-card">
+          <span class="how-card__index">Share</span>
+          <h3>Invite people</h3>
+          <p>Send the code or link however you like. Anyone who opens it can join in seconds.</p>
+        </article>
+        <article class="how-card">
+          <span class="how-card__index">Chat</span>
+          <h3>Talk freely</h3>
+          <p>Real-time messages, reactions, replies, images and video — and it all disappears on its own.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Nook is a temporary chat room. Rooms and their contents are deleted automatically.</p>
+  </footer>
+
+  <!-- Create Room Modal -->
+  <div id="createModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+      <button class="modal__close" data-close-modal aria-label="Close dialog">✕</button>
+      <h2 id="createModalTitle">Create a room</h2>
+      <p class="modal__subtitle">You'll join automatically as the host.</p>
+      <form id="createForm" novalidate>
+        <label class="field">
+          <span class="field__label">Display name</span>
+          <input type="text" id="createNameInput" maxlength="24" placeholder="e.g. Alex" autocomplete="off" required />
+        </label>
+        <p class="field__error" id="createNameError" role="alert" hidden></p>
+        <button type="submit" class="btn btn--primary btn--block" id="createSubmitBtn">
+          <span class="btn__label">Create Room</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Join Room Modal -->
+  <div id="joinModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle">
+      <button class="modal__close" data-close-modal aria-label="Close dialog">✕</button>
+      <h2 id="joinModalTitle">Join a room</h2>
+      <p class="modal__subtitle">Enter the room code you were given.</p>
+      <form id="joinForm" novalidate>
+        <label class="field">
+          <span class="field__label">Room code</span>
+          <input type="text" id="joinCodeInput" maxlength="8" placeholder="X7K29P" autocomplete="off" required />
+        </label>
+        <p class="field__error" id="joinCodeError" role="alert" hidden></p>
+        <button type="submit" class="btn btn--primary btn--block" id="joinSubmitBtn">
+          <span class="btn__label">Join Room</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
